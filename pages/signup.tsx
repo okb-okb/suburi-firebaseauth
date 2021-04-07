@@ -1,10 +1,11 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+
 import { auth } from "../utils/firebase";
 
-const IndexPage: NextPage = () => {
+const SignUp: NextPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,22 +18,23 @@ const IndexPage: NextPage = () => {
     });
   }, []);
 
-  // ログイン処理
-  const logIn = async (e: FormEvent) => {
+  // 新規ユーザー登録
+  const createUser = async (e: FormEvent) => {
     // form の動作を止める
     e.preventDefault();
 
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      router.push("/contents");
-    } catch (err) {
-      alert(err.message);
+      // firebase のユーザー登録用メソッド
+      await auth.createUserWithEmailAndPassword(email, password);
+      router.push("/");
+    } catch (error) {
+      alert(error.message);
     }
   };
 
   return (
     <>
-      <form onSubmit={logIn}>
+      <form onSubmit={createUser}>
         <div>
           <label htmlFor="email">メールアドレス: </label>
           <input
@@ -49,11 +51,11 @@ const IndexPage: NextPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit">ログイン</button>
+        <button type="submit">登録</button>
       </form>
-      <Link href="/signup">新規登録</Link>
+      <Link href="/">ログイン</Link>
     </>
   );
 };
 
-export default IndexPage;
+export default SignUp;
